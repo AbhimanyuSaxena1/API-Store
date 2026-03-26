@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import userRoutes from './routes/user.routes.js';
 import authRouter from './routes/auth.routes.js';
 import apiRouter from "./routes/api.routes.js";
+import endpointRouter from "./routes/endPoint.routes.js";
 
 export const app = express();
 
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use('/api/v1/users', userRoutes);
 app.use("/api/v1/auth" , authRouter);
 app.use("/api/v1/apis", apiRouter);
+app.use("/api/v1/endpoints", endpointRouter);
 
 // Root route
 app.get("/" , (req  , res)=>{
