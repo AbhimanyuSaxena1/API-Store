@@ -1,3 +1,339 @@
-API Store 
-A marketplace for all your apis 
-Server README 
+# API Store Backend — Server
+
+This directory contains the backend API for the API Store project.
+
+## Responsibilities
+
+- User authentication and authorization (JWT-based)
+- API and endpoint management
+- Secure cookie handling
+- OAuth integration (GitHub)
+- Middleware handling and validation
+
+The backend is built using Node.js, Express.js, and MongoDB.
+
+---
+
+## Folder Structure
+
+```
+server/
+│
+├── src/
+│   ├── config/            # Database and application configuration
+│   ├── controllers/       # Business logic and request handlers
+│   ├── middlewares/       # Authentication and error handling
+│   ├── models/            # Mongoose models (User, API, Endpoint)
+│   ├── routes/            # API route definitions
+│   ├── utils/             # Helper and utility functions
+│   ├── app.js             # Express app configuration
+│   └── server.js          # Application entry point
+│
+├── .env                   # Environment variables
+├── .gitignore
+├── package.json
+└── README.md
+```
+
+---
+
+## Tech Stack
+
+- Node.js  
+- Express.js  
+- MongoDB  
+- Mongoose  
+- JSON Web Token (JWT)
+
+---
+
+## Installation and Setup
+
+### 1. Navigate to server
+
+```bash
+cd server
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Create `.env`
+
+```env
+PORT=3000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+
+GITHUB_CLIENT_ID=your_client_id
+GITHUB_CLIENT_SECRET=your_client_secret
+GITHUB_REDIRECT_URI=http://localhost:3000/api/v1/auth/github/callback
+CLIENT_URL=http://localhost:5173
+```
+
+---
+
+### 4. Run server
+
+#### Development
+
+```bash
+npm run dev
+```
+
+#### Production
+
+```bash
+npm start
+```
+
+Server runs at:
+
+```
+http://localhost:3000
+```
+
+---
+
+## API Base URL
+
+```
+/api/v1
+```
+
+---
+
+## Authentication API
+
+Base Route:
+
+```
+/api/v1/auth
+```
+
+---
+
+## 1. Register User
+
+### Endpoint
+
+```
+POST /api/v1/auth/register
+```
+
+### Description
+
+Creates a new user account and sets JWT cookie.
+
+### Request Body
+
+```json
+{
+  "name": "Jay Rathore",
+  "email": "jay@example.com",
+  "password": "123456"
+}
+```
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "message": "User registered successfully",
+  "user": {
+    "id": "user_id",
+    "name": "Jay Rathore",
+    "email": "jay@example.com",
+    "avatar": null
+  }
+}
+```
+
+### Error Responses
+
+```json
+{
+  "success": false,
+  "message": "All fields are required"
+}
+```
+
+```json
+{
+  "success": false,
+  "message": "User already exists"
+}
+```
+
+---
+
+## 2. Login User
+
+### Endpoint
+
+```
+POST /api/v1/auth/login
+```
+
+### Description
+
+Authenticates user and sets JWT cookie.
+
+### Request Body
+
+```json
+{
+  "email": "jay@example.com",
+  "password": "123456"
+}
+```
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "message": "Logged in successfully",
+  "user": {
+    "id": "user_id",
+    "name": "Jay Rathore",
+    "email": "jay@example.com",
+    "avatar": null
+  }
+}
+```
+
+### Error Response
+
+```json
+{
+  "success": false,
+  "message": "Invalid credentials"
+}
+```
+
+---
+
+## 3. Logout User
+
+### Endpoint
+
+```
+GET /api/v1/auth/logout
+```
+
+### Description
+
+Clears authentication cookie.
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "message": "Logged out successfully"
+}
+```
+
+---
+
+## 4. GitHub Login
+
+### Endpoint
+
+```
+GET /api/v1/auth/github
+```
+
+### Description
+
+Redirects user to GitHub OAuth login.
+
+---
+
+## 5. GitHub Callback
+
+### Endpoint
+
+```
+GET /api/v1/auth/github/callback
+```
+
+### Description
+
+Handles GitHub OAuth response, creates or logs in the user, and redirects to frontend.
+
+### Flow
+
+1. User logs in via GitHub  
+2. GitHub returns code  
+3. Server exchanges code for access token  
+4. Fetches user profile  
+5. Creates or logs in user  
+6. Sets JWT cookie  
+7. Redirects to dashboard  
+
+---
+
+## 6. Get Current User Profile
+
+### Endpoint
+
+```
+GET /api/v1/users/profile
+```
+
+### Auth Required
+
+Yes (JWT)
+
+### Description
+
+Returns logged-in user details.
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "user": {
+    "id": "user_id",
+    "name": "Jay Rathore",
+    "email": "jay@example.com",
+    "avatar": "image_url"
+  }
+}
+```
+
+### Error Response
+
+```json
+{
+  "success": false,
+  "message": "User not found"
+}
+```
+
+---
+
+## Authentication Details
+
+- JWT stored in HTTP-only cookies  
+- Cookie expiry: 7 days  
+- Secure in production  
+- SameSite: lax (development) / none (production)
+
+---
+
+## Notes
+
+- Passwords are hashed using bcrypt  
+- OAuth supported via GitHub  
+- Tokens generated using JWT  
+- Clean MVC architecture used  
+
+---
