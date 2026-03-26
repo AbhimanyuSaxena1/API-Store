@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/user.routes.js';
 import authRouter from './routes/auth.routes.js';
+import apiRouter from "./routes/api.router.js";
 
 export const app = express();
 
@@ -19,6 +20,7 @@ app.use(cookieParser());
 // Routes
 app.use('/api/v1/users', userRoutes);
 app.use("/api/v1/auth" , authRouter);
+app.use("/api/v1/apis", apiRouter);
 
 // Root route
 app.get("/" , (req  , res)=>{
