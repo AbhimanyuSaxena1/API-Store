@@ -4,7 +4,7 @@ import { isAuthenticated } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
-// Profile route
+// PUBLIC ROUTE
 router.get('/profile', isAuthenticated, getProfile);
 
 export default router;
