@@ -1,5 +1,5 @@
 import API from "../models/api.model.js";
-import { successResponse, errorResponse } from "../utils/responseHandler.js";
+import { successResponse, errorResponse } from "../utils/response.handler.js";
 
 export const createAPI = async (req, res) => {
   try {

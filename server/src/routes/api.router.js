@@ -7,7 +7,7 @@ import {
   deleteAPI,
 } from "../controllers/api.controller.js";
 
-import { protect } from "../middleware/auth.middleware.js";
+import { isAuthenticated } from './../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
@@ -16,8 +16,8 @@ router.get("/", getAllAPIs);
 router.get("/:id", getAPIById);
 
 // PROTECTED ROUTES
-router.post("/", protect, createAPI);
-router.put("/:id", protect, updateAPI);
-router.delete("/:id", protect, deleteAPI);
+router.post("/", isAuthenticated , createAPI);
+router.put("/:id", isAuthenticated , updateAPI);
+router.delete("/:id", isAuthenticated , deleteAPI);
 
 export default router;
