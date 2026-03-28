@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
+import { JWT_SECRET } from '../configs/env.config.js';
 
 export const isAuthenticated = async (req, res, next) => {
   try {
@@ -9,7 +10,7 @@ export const isAuthenticated = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Please login to access this resource' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.user = await User.findById(decoded.id);
 
     if (!req.user) {

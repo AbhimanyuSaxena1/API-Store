@@ -1,6 +1,7 @@
 import User from '../models/user.model.js';
 import axios from 'axios';
 import bcrypt from 'bcrypt'
+import { GITHUB_CLIENT_ID , GITHUB_REDIRECT_URI} from '../configs/env.config.js';
 
 // Options for cookie
 const cookieOptions = {
@@ -86,7 +87,7 @@ export const logout = (req, res) => {
 
 // GitHub Login (Initiate)
 export const githubLogin = (req, res) => {
-  const url = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${process.env.GITHUB_REDIRECT_URI}&scope=user:email`;
+  const url = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${GITHUB_REDIRECT_URI}&scope=user:email`;
   res.redirect(url);
 };
 
@@ -103,8 +104,8 @@ export const githubCallback = async (req, res) => {
     const tokenResponse = await axios.post(
       'https://github.com/login/oauth/access_token',
       {
-        client_id: process.env.GITHUB_CLIENT_ID,
-        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        client_id: GITHUB_CLIENT_ID,
+        client_secret: GITHUB_CLIENT_SECRET,
         code,
       },
       { headers: { Accept: 'application/json' } }
