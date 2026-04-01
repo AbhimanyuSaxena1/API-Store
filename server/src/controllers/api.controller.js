@@ -1,7 +1,7 @@
 import API from "../models/api.model.js";
-import { successResponse, errorResponse } from "../utils/response.handler.js";
+import { successResponse } from "../utils/response.handler.js";
 
-export const createAPI = async (req, res) => {
+export const createAPI = async (req, res, next) => {
   try {
     const { title, description, baseUrl, category } = req.body;
 
@@ -19,13 +19,11 @@ export const createAPI = async (req, res) => {
       data: api,
     });
   } catch (error) {
-    return errorResponse(res, {
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-export const getAllAPIs = async (req, res) => {
+export const getAllAPIs = async (req, res, next) => {
   try {
     const apis = await API.find().populate("author", "name email");
 
@@ -34,13 +32,11 @@ export const getAllAPIs = async (req, res) => {
       data: apis,
     });
   } catch (error) {
-    return errorResponse(res, {
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-export const getAPIById = async (req, res) => {
+export const getAPIById = async (req, res, next) => {
   try {
     const api = await API.findById(req.params.id).populate(
       "author",
@@ -48,10 +44,9 @@ export const getAPIById = async (req, res) => {
     );
 
     if (!api) {
-      return errorResponse(res, {
-        status: 404,
-        message: "API not found",
-      });
+      const err = new Error("API not found");
+      err.status = 404;
+      return next(err);
     }
 
     return successResponse(res, {
@@ -59,28 +54,24 @@ export const getAPIById = async (req, res) => {
       data: api,
     });
   } catch (error) {
-    return errorResponse(res, {
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-export const updateAPI = async (req, res) => {
+export const updateAPI = async (req, res, next) => {
   try {
     let api = await API.findById(req.params.id);
 
     if (!api) {
-      return errorResponse(res, {
-        status: 404,
-        message: "API not found",
-      });
+      const err = new Error("API not found");
+      err.status = 404;
+      return next(err);
     }
 
     if (api.author.toString() !== req.user._id.toString()) {
-      return errorResponse(res, {
-        status: 403,
-        message: "Not authorized",
-      });
+      const err = new Error("Not authorized");
+      err.status = 403;
+      return next(err);
     }
 
     api = await API.findByIdAndUpdate(req.params.id, req.body, {
@@ -93,28 +84,24 @@ export const updateAPI = async (req, res) => {
       data: api,
     });
   } catch (error) {
-    return errorResponse(res, {
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-export const deleteAPI = async (req, res) => {
+export const deleteAPI = async (req, res, next) => {
   try {
     const api = await API.findById(req.params.id);
 
     if (!api) {
-      return errorResponse(res, {
-        status: 404,
-        message: "API not found",
-      });
+      const err = new Error("API not found");
+      err.status = 404;
+      return next(err);
     }
 
     if (api.author.toString() !== req.user._id.toString()) {
-      return errorResponse(res, {
-        status: 403,
-        message: "Not authorized",
-      });
+      const err = new Error("Not authorized");
+      err.status = 403;
+      return next(err);
     }
 
     await api.deleteOne();
@@ -123,8 +110,6 @@ export const deleteAPI = async (req, res) => {
       message: "API deleted successfully",
     });
   } catch (error) {
-    return errorResponse(res, {
-      message: error.message,
-    });
+    next(error);
   }
 };
